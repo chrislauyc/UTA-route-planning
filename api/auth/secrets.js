@@ -1,3 +1,3 @@
 module.exports = {
-    JWT_SECRET: process.eventNames.JWT_SECRET || "keep it secret keep it safe"
+    JWT_SECRET: process.env.JWT_SECRET || "keep it secret keep it safe"
 }
