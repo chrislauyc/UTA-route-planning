@@ -12,6 +12,7 @@ router.post("/login",async(req,res,next)=>{
             if(!user){
                 return res.status(401).json({message:"user not found"});
             }
+
             const passwordValid = await bcrypt.compare(password,user.password);
             if(!passwordValid){
                 return res.status(401).json({message:"invalid credentials"})
@@ -41,25 +42,20 @@ router.post("/login",async(req,res,next)=>{
 router.post("/register",async(req,res,next)=>{
     try{
         const {username,password} = req.body;
-        console.log("body: ",req.body);
         if(!username || !password){
             res.status(400).json({message:"username and password needed"});
             return;
         }
-        console.log("getbyusername starts");
         const user = await userModel.getByUsername(username);
-        console.log("getbyusername ends");
         if(user){
             res.status(400).json({message:"user already exists"});
             return;
         }
-        console.log("inserting")
-        const newUser = await userModel.insert({username,password});
-        console.log("insert successful")
+        
+        const newUser = await userModel.insert({username,password:await bcrypt.hash(password,14)});
         res.status(201).json(newUser);
     }
     catch(err){
-        console.log(err);
         next(err);
     }
     
@@ -67,7 +63,7 @@ router.post("/register",async(req,res,next)=>{
 
 router.get("/",authToken,async(req,res,next)=>{
     try{
-        const users = await userModel.get();
+        const users = await userModel.get(req.query);
         res.status(200).json(users);
     }
     catch(err){

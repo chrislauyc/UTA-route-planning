@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 const {JWT_SECRET} = require("../auth/secrets");
 const authToken=async(req,res,next)=>{
     try{
-        const {token} = req.body;
+        const {token} = JSON.parse(req.headers.authorization);
         if(token){
             jwt.verify(token, JWT_SECRET, (err,decoded)=>{
                 if(err){
@@ -18,6 +18,7 @@ const authToken=async(req,res,next)=>{
         }
     }
     catch(err){
+        console.log({err});
         next(err);
     }   
 };
