@@ -12,7 +12,7 @@ server.get("/",(req,res)=>{
 server.use("/api/users",usersRouter);
 
 server.use((err,req,res,next)=>{
-    res.status(500).json({message:err});
+    res.status(500).json({message:JSON.stringify(err)});
 });
 
 module.exports=server;

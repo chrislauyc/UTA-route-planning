@@ -2,6 +2,10 @@ const jwt = require("jsonwebtoken");
 const {JWT_SECRET} = require("../auth/secrets");
 const authToken=async(req,res,next)=>{
     try{
+        if(!req.headers.authorization){
+            res.status(400).json({message:"headers authorization needed"})
+            return;
+        }
         const {token} = JSON.parse(req.headers.authorization);
         if(token){
             jwt.verify(token, JWT_SECRET, (err,decoded)=>{
